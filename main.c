@@ -1,26 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
-void createRandomData() {
-  // Todo: Cria dados randomicos
-}
-
-void selectRandomData() {
-  // Todo: Seleciona dados randomicos de arquivos estaticos
-}
-
-void quickSort() {
-  // Todo: Fazer um quickSort
-}
-
-void shellSort() {
-  // Todo: Fazer um shellSort
-}
-
-void mergeSort() {
-  // Todo: Fazer um mergeSort
-}
+#define NELEMS(x)  (sizeof(x) / sizeof((x)[0]))
 
 void chooseAlgorithm() {
   int option;
@@ -49,6 +30,14 @@ void chooseAlgorithm() {
 }
 
 int main(void) {
+  // int * vetor;
+  // vetor = selectRandomData();
+
+  // // Testing selected data
+  // for (int loop = 0; loop < 50; loop++) {
+  //   printf("%i \n", vetor[loop]);
+  // }
+  
   while(1) {
     int option;
     printf("\nTeste de performance de algoritmos\n");
