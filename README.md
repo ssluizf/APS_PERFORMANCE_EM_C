@@ -3,12 +3,10 @@
 ### For Windows users:
 To compile the code on terminal use:
 ```
-  gcc -c main.c && gcc -c algorithms.c && gcc -c randomData.c
-  gcc -c algorithms.c
-  gcc -c randomData.c
+  gcc -c main.c
 ```
 Then create and execute the .exe file with:
 ```
-  gcc -o main main.o algorithms.o randomData.o
+  gcc -o main main.o
   start main.exe
 ```
