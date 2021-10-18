@@ -92,16 +92,16 @@ void quickSort(int* v, int tam) {
   }
 }
 
-void shellSort(int vetor[], int tamanho) {
+void shellSort(int v[], int tam) {
   // Rearrange elements at each n/2, n/4, n/8, ... intervals
-  for (int interval = tamanho / 2; interval > 0; interval /= 2) {
-    for (int i = interval; i < tamanho; i += 1) {
-      int temp = vetor[i];
+  for (int interval = tam / 2; interval > 0; interval /= 2) {
+    for (int i = interval; i < tam; i += 1) {
+      int temp = v[i];
       int j;
-      for (j = i; j >= interval && vetor[j - interval] > temp; j -= interval) {
-        vetor[j] = vetor[j - interval];
+      for (j = i; j >= interval && v[j - interval] > temp; j -= interval) {
+        v[j] = v[j - interval];
       }
-      vetor[j] = temp;
+      v[j] = temp;
     }
   }
 }
