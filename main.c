@@ -199,13 +199,7 @@ int main(void) {
         chooseAlgorithm(vetor);
         break;
       case 2:
-        printf("\n--------- RESULTADO DO SHELL SORT ---------\n\n");
-        shellSort(vetor, tamanho);
-        printArray(vetor, tamanho);
-        printf("\n--------- COMECO DO QUICK SORT ---------\n\n");
-        quickSort(vetor, tamanho);
-        printf("\n--------- COMECO DO MERGE SORT ---------\n\n");
-        mergeSort(vetor, 0, tamanho - 1);
+        // To do: Testar essa opção
         break;
       case 3:
         goto EndWhile;
