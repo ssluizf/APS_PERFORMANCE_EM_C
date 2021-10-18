@@ -199,8 +199,9 @@ int main(void) {
         chooseAlgorithm(vetor);
         break;
       case 2:
-        printf("\n--------- COMECO DO SHELL SORT ---------\n\n");
+        printf("\n--------- RESULTADO DO SHELL SORT ---------\n\n");
         shellSort(vetor, tamanho);
+        printArray(vetor, tamanho);
         printf("\n--------- COMECO DO QUICK SORT ---------\n\n");
         quickSort(vetor, tamanho);
         printf("\n--------- COMECO DO MERGE SORT ---------\n\n");
