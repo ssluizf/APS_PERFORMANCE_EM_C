@@ -1,18 +1,19 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 
 int tamanho = 0;
 
-void createRandomData() {
-  // Todo: Cria dados randomicos
+int eatLine(FILE *fp) {
+    for(;;) {
+        int ch = getc(fp);
+        if (ch == '\n' || ch < 0) return ch;
+    }
 }
 
-void printArray(int array[], int size) {
-  for (int i = 0; i < size; ++i) {
-    printf("%d  ", array[i]);
-  }
-  printf("\n");
+void createRandomData() {
+  // Todo: Cria dados randomicos
 }
 
 int * selectRandomData() {
@@ -20,8 +21,9 @@ int * selectRandomData() {
   int number = 0;
   FILE *file;
 
-  printf("Selecione o arquivo que deseja usar no algoritmo:\n");
-  gets(file_name);
+  printf("\nSelecione o arquivo que deseja usar no algoritmo: ");
+  eatLine(stdin);
+  scanf("%[^\n]%*c", &file_name);
 
   // Leitura do arquivo
   file = fopen(file_name, "r");
@@ -76,9 +78,6 @@ void quickSort(int* v, int tam) {
         a++;
         b--;
       }
-      for (k = 0; k < j; k++)
-        printf("%d ", v[k]);
-      printf("\n");
     } while (a <= b);
     // troca pivo
     v[0] = v[b];
@@ -86,9 +85,6 @@ void quickSort(int* v, int tam) {
     // ordena sub-vetires restantes
     quickSort(v, b);
     quickSort(&v[a], tam - a);
-    for (k = 0; k < j; k++)
-      printf("%d ", v[k]);
-    printf("\n");
   }
 }
 
@@ -136,21 +132,16 @@ void mergeSort(int* v, int inicio, int fim) {
       t[k] = v[j];
       j++; k++;
     }
-    for (z = 0; z < tamanho; z++)
-      printf("%d ", v[z]);
-    printf("\n");
   }
   // copia vetor intercalado para o vetor original
   for (i = inicio; i <= fim; i++)
     v[i] = t[i - inicio];
-  for (z = 0; z < tamanho; z++)
-    printf("%d ", v[z]);
-  printf("\n");
   free(t);
 }
 
 void chooseAlgorithm(int* vetor) {
   int option;
+  char showResults;
   printf("\nSelecione uma algoritmo\n");
   printf("Opcoes: \n");
   printf("1 - Quick Sort\n");
@@ -162,34 +153,51 @@ void chooseAlgorithm(int* vetor) {
 
   switch(option) {
     case 1:
-      printf("\n--------- COMECO DO QUICK SORT ---------\n\n");
       quickSort(vetor, tamanho);
       break;
     case 2:
-      printf("\n--------- RESULTADO DO SHELL SORT ---------\n\n");
       shellSort(vetor, tamanho);
-      printArray(vetor, tamanho);
       break;
     case 3:
-      printf("\n--------- COMECO DO MERGE SORT ---------\n\n");
       mergeSort(vetor, 0, tamanho - 1);
       break;
+  }
+
+  printf("\nMostrar resultados? S/N ");
+  scanf("%d", &showResults);
+
+  if (toupper(showResults) == 'S') {
+    // To do: Mostrar resultadados de performance dos algorítmos
   }
 
   return;
 }
 
 int main(void) {
-  int * vetor;
-  vetor = selectRandomData();
-
   while(1) {
     int option;
-    printf("\nTeste de performance de algoritmos\n");
+    int * vetor;
+
+    printf("\nTeste de performance de algoritmos\n\n");
     printf("Opcoes: \n");
+    printf("1 - Selecionar arquivo estatico para analise dos dados\n");
+    printf("2 - Gerar vetor para analise dos dados\n\n");
+
+    printf("Selecione uma opcao acima digitando o numero correspondente: ");
+    scanf("%d", &option);
+    
+    switch(option) {
+      case 1:
+        vetor = selectRandomData();
+      case 2:
+        // To do: Testar essa opção
+        break;
+    }
+
+    printf("\nOpcoes: \n");
     printf("1 - Executar algoritmos individualmente\n");
     printf("2 - Executar todos os algoritmos\n");
-    printf("3 - Fim\n");
+    printf("3 - Fim\n\n");
   
     printf("Selecione uma opcao acima digitando o numero correspondente: ");
     scanf("%d", &option);
@@ -197,10 +205,10 @@ int main(void) {
     switch(option) {
       case 1:
         chooseAlgorithm(vetor);
-        break;
+        goto EndWhile;
       case 2:
         // To do: Testar essa opção
-        break;
+        goto EndWhile;
       case 3:
         goto EndWhile;
     }
