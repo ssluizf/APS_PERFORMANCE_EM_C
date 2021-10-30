@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
+#include <sys/time.h>
 
 int tamanho = 0;
 
@@ -142,7 +143,10 @@ void mergeSort(int* v, int inicio, int fim) {
 void chooseAlgorithm(int* vetor) {
   int option;
   char showResults;
-  printf("\nSelecione uma algoritmo\n");
+  struct timeval st, et;
+  int i, num_runs = 5;
+
+  printf("\nSelecione um algoritmo\n");
   printf("Opcoes: \n");
   printf("1 - Quick Sort\n");
   printf("2 - Shell Sort\n");
@@ -153,22 +157,34 @@ void chooseAlgorithm(int* vetor) {
 
   switch(option) {
     case 1:
-      quickSort(vetor, tamanho);
+      gettimeofday(&st,NULL);
+      for (i=0; i<num_runs; i++) {
+        quickSort(vetor, tamanho);
+      }
+      gettimeofday(&et,NULL);
       break;
     case 2:
-      shellSort(vetor, tamanho);
+      gettimeofday(&st,NULL);
+      for (i=0; i<num_runs; i++) {
+        shellSort(vetor, tamanho);
+      }
+      gettimeofday(&et,NULL);
       break;
     case 3:
-      mergeSort(vetor, 0, tamanho - 1);
+      gettimeofday(&st,NULL);
+      for (i=0; i<num_runs; i++) {
+        mergeSort(vetor, 0, tamanho - 1);
+      }
+      gettimeofday(&et,NULL);
       break;
   }
 
-  printf("\nMostrar resultados? S/N ");
-  scanf("%d", &showResults);
+  int elapsed = (((et.tv_sec - st.tv_sec) * 1000000) + (et.tv_usec - st.tv_usec)) / num_runs;
 
-  if (toupper(showResults) == 'S') {
-    // To do: Mostrar resultadados de performance dos algorítmos
-  }
+  printf("\nMicrosegundos: %d\n", elapsed);
+  fflush(stdin);
+  printf("\nFim... [Pressione ENTER para finalizar]");
+  getchar();
 
   return;
 }
