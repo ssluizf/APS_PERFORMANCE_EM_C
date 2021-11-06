@@ -141,43 +141,54 @@ void mergeSort(int* v, int inicio, int fim) {
 }
 
 void execAll(int* vetor) {
-  struct timeval st, et;
-  int i, num_runs = 5;
+  struct timeval start, end;
+  int i, num_runs = 20;
   int * copy = malloc(sizeof(int) * tamanho);
 
+  if (tamanho >= 5e3) {
+    num_runs = 10;
+  }
+
+  if (tamanho >= 1e4) {
+    num_runs = 1;
+  }
+
   memcpy(copy, vetor, tamanho * sizeof(int));
-  gettimeofday(&st,NULL);
+  gettimeofday(&start,NULL);
   for (i=0; i<num_runs; i++) {
     quickSort(vetor, tamanho);
   }
-  gettimeofday(&et,NULL);
+  gettimeofday(&end,NULL);
 
-  int quickElapsed = (((et.tv_sec - st.tv_sec) * 1000000) + (et.tv_usec - st.tv_usec)) / num_runs;
+  double quick_time_taken = (end.tv_sec - start.tv_sec) * 1e6;
+  quick_time_taken = ((quick_time_taken + end.tv_usec - start.tv_usec) * 1e-6) / num_runs;
 
   memcpy(copy, vetor, tamanho * sizeof(int));
-  gettimeofday(&st,NULL);
+  gettimeofday(&start,NULL);
   for (i=0; i<num_runs; i++) {
     shellSort(copy, tamanho);
   }
-  gettimeofday(&et,NULL);
+  gettimeofday(&end,NULL);
 
-  int shellElapsed = (((et.tv_sec - st.tv_sec) * 1000000) + (et.tv_usec - st.tv_usec)) / num_runs;
+  double shell_time_taken = (end.tv_sec - start.tv_sec) * 1e6;
+  shell_time_taken = ((shell_time_taken + end.tv_usec - start.tv_usec) * 1e-6) / num_runs;
 
   memcpy(copy, vetor, tamanho * sizeof(int));
-  gettimeofday(&st,NULL);
+  gettimeofday(&start,NULL);
   for (i=0; i<num_runs; i++) {
     mergeSort(copy, 0, tamanho - 1);
   }
-  gettimeofday(&et,NULL);
+  gettimeofday(&end,NULL);
 
-  int mergeElapsed = (((et.tv_sec - st.tv_sec) * 1000000) + (et.tv_usec - st.tv_usec)) / num_runs;
+  double merge_time_taken = (end.tv_sec - start.tv_sec) * 1e6;
+  merge_time_taken = ((merge_time_taken + end.tv_usec - start.tv_usec) * 1e-6) / num_runs;
 
   printf("\nResultados do QuickSort:\n");
-  printf("\nMicrosegundos: %d\n", quickElapsed);
+  printf("Segundos: %f\n", quick_time_taken);
   printf("\nResultados do ShellSort:\n");
-  printf("\nMicrosegundos: %d\n", shellElapsed);
+  printf("Segundos: %f\n", shell_time_taken);
   printf("\nResultados do MergeSort:\n");
-  printf("\nMicrosegundos: %d\n", mergeElapsed);
+  printf("Segundos: %f\n", merge_time_taken);
   fflush(stdin);
   printf("\nFim... [Pressione ENTER para finalizar]");
   getchar();
@@ -187,8 +198,16 @@ void chooseAlgorithm(int* vetor) {
   int option;
   char* algorithm;
   char showResults;
-  struct timeval st, et;
-  int i, num_runs = 5;
+  struct timeval start, end;
+  int i, num_runs = 20;
+
+  if (tamanho >= 5e3) {
+    num_runs = 10;
+  }
+
+  if (tamanho >= 1e4) {
+    num_runs = 1;
+  }
 
   printf("\nSelecione um algoritmo\n");
   printf("\nOpcoes: \n");
@@ -203,36 +222,38 @@ void chooseAlgorithm(int* vetor) {
     case 1:
       algorithm = "QuickSort";
 
-      gettimeofday(&st,NULL);
+      gettimeofday(&start,NULL);
       for (i=0; i<num_runs; i++) {
         quickSort(vetor, tamanho);
       }
-      gettimeofday(&et,NULL);
+      gettimeofday(&end,NULL);
       break;
     case 2:
       algorithm = "ShellSort";
 
-      gettimeofday(&st,NULL);
+      gettimeofday(&start,NULL);
       for (i=0; i<num_runs; i++) {
         shellSort(vetor, tamanho);
       }
-      gettimeofday(&et,NULL);
+      gettimeofday(&end,NULL);
       break;
     case 3:
       algorithm = "MergeSort";
 
-      gettimeofday(&st,NULL);
+      gettimeofday(&start,NULL);
       for (i=0; i<num_runs; i++) {
         mergeSort(vetor, 0, tamanho - 1);
       }
-      gettimeofday(&et,NULL);
+      gettimeofday(&end,NULL);
       break;
   }
 
-  int elapsed = (((et.tv_sec - st.tv_sec) * 1000000) + (et.tv_usec - st.tv_usec)) / num_runs;
+  double time_taken = (end.tv_sec - start.tv_sec) * 1e6;
+  time_taken = ((time_taken + end.tv_usec - start.tv_usec) * 1e-6) / num_runs;
+
 
   printf("\nResultados do %s:\n", algorithm);
-  printf("\nMicrosegundos: %d\n", elapsed);
+  printf("\nSegundos: %f\n", time_taken);
   fflush(stdin);
   printf("\nFim... [Pressione ENTER para finalizar]");
   getchar();
