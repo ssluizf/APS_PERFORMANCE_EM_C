@@ -3,21 +3,29 @@
 #include <string.h>
 #include <ctype.h>
 #include <sys/time.h>
+#include <dirent.h>
+#include <unistd.h>
+#include <errno.h>
 
 int tamanho = 0;
 
-int eatLine(FILE *fp) {
-    for(;;) {
-        int ch = getc(fp);
-        if (ch == '\n' || ch < 0) return ch;
-    }
+int eatLine(FILE *fp)
+{
+  for (;;)
+  {
+    int ch = getc(fp);
+    if (ch == '\n' || ch < 0)
+      return ch;
+  }
 }
 
-void createRandomData() {
+void createRandomData()
+{
   // Todo: Cria dados randomicos
 }
 
-int * selectRandomData() {
+int *selectRandomData()
+{
   char c, file_name[255];
   int number = 0;
   FILE *file;
@@ -34,18 +42,19 @@ int * selectRandomData() {
     perror("Erro ao tentar abrir o arquivo.\n");
     return 0;
   }
-  
+
   // Criando um vetor com o tamanho do arquivo
   for (c = getc(file); c != EOF; c = getc(file))
     if (c == '\n')
-        tamanho = tamanho + 1;
+      tamanho = tamanho + 1;
 
   int vetor[tamanho];
 
   // Adicionando os números ao vetor
   fseek(file, 0, SEEK_SET);
 
-  for (int i = 0; i < tamanho; i++) {
+  for (int i = 0; i < tamanho; i++)
+  {
     fscanf(file, "%d", &number);
     vetor[i] = number;
   }
@@ -53,26 +62,103 @@ int * selectRandomData() {
   fclose(file);
 
   // Cópia do vetor para retornar na função
-  int * copy = malloc(sizeof(int) * tamanho);
+  int *copy = malloc(sizeof(int) * tamanho);
   memcpy(copy, vetor, tamanho * sizeof(int));
 
   return copy;
 }
 
-void quickSort(int* v, int tam) {
+int selectFolderData()
+{
+  DIR *FD;
+  struct dirent *in_file;
+  FILE *common_file;
+  FILE *entry_file;
+  char buffer[BUFSIZ];
+
+  /* Opening common file for writing */
+  // common_file = fopen(path_to_your_common_file, "w");
+  // if (common_file == NULL)
+  // {
+  //     fprintf(stderr, "Error : Failed to open common_file - %s\n", strerror(errno));
+
+  //     return 1;
+  // }
+
+  /* Scanning the in directory */
+  if (NULL == (FD = opendir(argv[1])))
+  {
+    fprintf(stderr, "Erro ao tentar abrir a pasta. - %s\n", strerror(errno));
+    // fclose(common_file);
+
+    return 1;
+  }
+  while ((in_file = readdir(FD)))
+  {
+    /* On linux/Unix we don't want current and parent directories
+         * On windows machine too, thanks Greg Hewgill
+         */
+    if (!strcmp(in_file->d_name, "."))
+      continue;
+    if (!strcmp(in_file->d_name, ".."))
+      continue;
+    /* Open directory entry file for common operation */
+    /* TODO : change permissions to meet your need! */
+    entry_file = fopen(in_file->d_name, "r");
+    if (entry_file == NULL)
+    {
+      fprintf(stderr, "Erro ao tentar abrir o arquivo. - %s\n", strerror(errno));
+      // fclose(common_file);
+
+      return 1;
+    }
+
+    for (c = getc(file); c != EOF; c = getc(file))
+      if (c == '\n')
+        tamanho = tamanho + 1;
+
+    int vetor[tamanho];
+
+    fseek(file, 0, SEEK_SET);
+
+    /* Doing some struf with entry_file : */
+    /* For example use fgets */
+    while (fgets(vetor, tamanho, entry_file) != NULL)
+    {
+      puts(vetor);
+    }
+
+    /* When you finish with the file, close it */
+    fclose(entry_file);
+  }
+
+  /* Don't forget to close common file before leaving */
+  // fclose(common_file);
+
+  int *copy = malloc(sizeof(int) * tamanho);
+  memcpy(copy, vetor, tamanho * sizeof(int));
+
+  return copy;
+}
+
+void quickSort(int *v, int tam)
+{
   int j = tam, k;
   if (tam <= 1)
     return;
-  else {
+  else
+  {
     int x = v[0];
     int a = 1;
     int b = tam - 1;
-    do {
+    do
+    {
       while ((a < tam) && (v[a] <= x))
         a++;
       while (v[b] > x)
         b--;
-      if (a < b) {
+      if (a < b)
+      {
         int temp = v[a];
         v[a] = v[b];
         v[b] = temp;
@@ -89,13 +175,17 @@ void quickSort(int* v, int tam) {
   }
 }
 
-void shellSort(int v[], int tam) {
+void shellSort(int v[], int tam)
+{
   // Rearrange elements at each n/2, n/4, n/8, ... intervals
-  for (int interval = tam / 2; interval > 0; interval /= 2) {
-    for (int i = interval; i < tam; i += 1) {
+  for (int interval = tam / 2; interval > 0; interval /= 2)
+  {
+    for (int i = interval; i < tam; i += 1)
+    {
       int temp = v[i];
       int j;
-      for (j = i; j >= interval && v[j - interval] > temp; j -= interval) {
+      for (j = i; j >= interval && v[j - interval] > temp; j -= interval)
+      {
         v[j] = v[j - interval];
       }
       v[j] = temp;
@@ -103,8 +193,9 @@ void shellSort(int v[], int tam) {
   }
 }
 
-void mergeSort(int* v, int inicio, int fim) {
-  int i, j, k, meio, * t, z;
+void mergeSort(int *v, int inicio, int fim)
+{
+  int i, j, k, meio, *t, z;
   if (inicio == fim)
     return;
   // ordenacao recursiva das duas metades
@@ -115,23 +206,32 @@ void mergeSort(int* v, int inicio, int fim) {
   i = inicio;
   j = meio + 1;
   k = 0;
-  t = (int*)malloc(sizeof(int) * (fim - inicio + 1));
-  while (i < meio + 1 || j < fim + 1) {
-    if (i == meio + 1) { // i passou do final da primeira metade, pegar v[j]
+  t = (int *)malloc(sizeof(int) * (fim - inicio + 1));
+  while (i < meio + 1 || j < fim + 1)
+  {
+    if (i == meio + 1)
+    { // i passou do final da primeira metade, pegar v[j]
       t[k] = v[j];
-      j++; k++;
+      j++;
+      k++;
     }
-    else if (j == fim + 1) { // j passou do final da segunda metade, pegar v[i]
+    else if (j == fim + 1)
+    { // j passou do final da segunda metade, pegar v[i]
       t[k] = v[i];
-      i++; k++;
+      i++;
+      k++;
     }
-    else if (v[i] < v[j]) { // v[i] < v[j], pegar v[i]
+    else if (v[i] < v[j])
+    { // v[i] < v[j], pegar v[i]
       t[k] = v[i];
-      i++; k++;
+      i++;
+      k++;
     }
-    else {
+    else
+    {
       t[k] = v[j];
-      j++; k++;
+      j++;
+      k++;
     }
   }
   // copia vetor intercalado para o vetor original
@@ -140,45 +240,51 @@ void mergeSort(int* v, int inicio, int fim) {
   free(t);
 }
 
-void execAll(int* vetor) {
+void execAll(int *vetor)
+{
   struct timeval start, end;
   int i, num_runs = 20;
-  int * copy = malloc(sizeof(int) * tamanho);
+  int *copy = malloc(sizeof(int) * tamanho);
 
-  if (tamanho >= 5e3) {
+  if (tamanho >= 5e3)
+  {
     num_runs = 10;
   }
 
-  if (tamanho >= 1e4) {
+  if (tamanho >= 1e4)
+  {
     num_runs = 1;
   }
 
   memcpy(copy, vetor, tamanho * sizeof(int));
-  gettimeofday(&start,NULL);
-  for (i=0; i<num_runs; i++) {
+  gettimeofday(&start, NULL);
+  for (i = 0; i < num_runs; i++)
+  {
     quickSort(vetor, tamanho);
   }
-  gettimeofday(&end,NULL);
+  gettimeofday(&end, NULL);
 
   double quick_time_taken = (end.tv_sec - start.tv_sec) * 1e6;
   quick_time_taken = ((quick_time_taken + end.tv_usec - start.tv_usec) * 1e-6) / num_runs;
 
   memcpy(copy, vetor, tamanho * sizeof(int));
-  gettimeofday(&start,NULL);
-  for (i=0; i<num_runs; i++) {
+  gettimeofday(&start, NULL);
+  for (i = 0; i < num_runs; i++)
+  {
     shellSort(copy, tamanho);
   }
-  gettimeofday(&end,NULL);
+  gettimeofday(&end, NULL);
 
   double shell_time_taken = (end.tv_sec - start.tv_sec) * 1e6;
   shell_time_taken = ((shell_time_taken + end.tv_usec - start.tv_usec) * 1e-6) / num_runs;
 
   memcpy(copy, vetor, tamanho * sizeof(int));
-  gettimeofday(&start,NULL);
-  for (i=0; i<num_runs; i++) {
+  gettimeofday(&start, NULL);
+  for (i = 0; i < num_runs; i++)
+  {
     mergeSort(copy, 0, tamanho - 1);
   }
-  gettimeofday(&end,NULL);
+  gettimeofday(&end, NULL);
 
   double merge_time_taken = (end.tv_sec - start.tv_sec) * 1e6;
   merge_time_taken = ((merge_time_taken + end.tv_usec - start.tv_usec) * 1e-6) / num_runs;
@@ -194,18 +300,21 @@ void execAll(int* vetor) {
   getchar();
 }
 
-void chooseAlgorithm(int* vetor) {
+void chooseAlgorithm(int *vetor)
+{
   int option;
-  char* algorithm;
+  char *algorithm;
   char showResults;
   struct timeval start, end;
   int i, num_runs = 20;
 
-  if (tamanho >= 5e3) {
+  if (tamanho >= 5e3)
+  {
     num_runs = 10;
   }
 
-  if (tamanho >= 1e4) {
+  if (tamanho >= 1e4)
+  {
     num_runs = 1;
   }
 
@@ -218,39 +327,42 @@ void chooseAlgorithm(int* vetor) {
   printf("\nSelecione uma opcao acima digitando o numero correspondente: ");
   scanf("%d", &option);
 
-  switch(option) {
-    case 1:
-      algorithm = "QuickSort";
+  switch (option)
+  {
+  case 1:
+    algorithm = "QuickSort";
 
-      gettimeofday(&start,NULL);
-      for (i=0; i<num_runs; i++) {
-        quickSort(vetor, tamanho);
-      }
-      gettimeofday(&end,NULL);
-      break;
-    case 2:
-      algorithm = "ShellSort";
+    gettimeofday(&start, NULL);
+    for (i = 0; i < num_runs; i++)
+    {
+      quickSort(vetor, tamanho);
+    }
+    gettimeofday(&end, NULL);
+    break;
+  case 2:
+    algorithm = "ShellSort";
 
-      gettimeofday(&start,NULL);
-      for (i=0; i<num_runs; i++) {
-        shellSort(vetor, tamanho);
-      }
-      gettimeofday(&end,NULL);
-      break;
-    case 3:
-      algorithm = "MergeSort";
+    gettimeofday(&start, NULL);
+    for (i = 0; i < num_runs; i++)
+    {
+      shellSort(vetor, tamanho);
+    }
+    gettimeofday(&end, NULL);
+    break;
+  case 3:
+    algorithm = "MergeSort";
 
-      gettimeofday(&start,NULL);
-      for (i=0; i<num_runs; i++) {
-        mergeSort(vetor, 0, tamanho - 1);
-      }
-      gettimeofday(&end,NULL);
-      break;
+    gettimeofday(&start, NULL);
+    for (i = 0; i < num_runs; i++)
+    {
+      mergeSort(vetor, 0, tamanho - 1);
+    }
+    gettimeofday(&end, NULL);
+    break;
   }
 
   double time_taken = (end.tv_sec - start.tv_sec) * 1e6;
   time_taken = ((time_taken + end.tv_usec - start.tv_usec) * 1e-6) / num_runs;
-
 
   printf("\nResultados do %s:\n", algorithm);
   printf("\nSegundos: %f\n", time_taken);
@@ -261,10 +373,12 @@ void chooseAlgorithm(int* vetor) {
   return;
 }
 
-int main(void) {
-  while(1) {
+int main(void)
+{
+  while (1)
+  {
     int option;
-    int * vetor;
+    int *vetor;
 
     printf("\nTeste de performance de algoritmos\n\n");
     printf("Opcoes: \n");
@@ -273,33 +387,35 @@ int main(void) {
 
     printf("Selecione uma opcao acima digitando o numero correspondente: ");
     scanf("%d", &option);
-    
-    switch(option) {
-      case 1:
-        vetor = selectRandomData();
-      case 2:
-        // To do: Testar essa opção
-        break;
+
+    switch (option)
+    {
+    case 1:
+      vetor = selectFolderData();
+    case 2:
+      // To do: Testar essa opção
+      break;
     }
 
     printf("\nOpcoes: \n");
     printf("1 - Executar algoritmos individualmente\n");
     printf("2 - Executar todos os algoritmos\n");
     printf("3 - Fim\n\n");
-  
+
     printf("Selecione uma opcao acima digitando o numero correspondente: ");
     scanf("%d", &option);
-  
-    switch(option) {
-      case 1:
-        chooseAlgorithm(vetor);
-        goto EndWhile;
-      case 2:
-        execAll(vetor);
-        goto EndWhile;
-      case 3:
-        goto EndWhile;
+
+    switch (option)
+    {
+    case 1:
+      chooseAlgorithm(vetor);
+      goto EndWhile;
+    case 2:
+      execAll(vetor);
+      goto EndWhile;
+    case 3:
+      goto EndWhile;
     }
   }
-  EndWhile: ;
+EndWhile:;
 }
