@@ -42,7 +42,7 @@ int main()
       // To do: Testar essa opção
       break;
     case 3:
-      selectFolderData("data/1k/Com Duplicidade/Aleatorio");
+      selectFolderData("data/10k/Com Duplicidade/Aleatorio");
     }
 
     printf("\nOpcoes: \n");

@@ -31,7 +31,7 @@ void execAll(int *vetor)
   gettimeofday(&start, NULL);
   for (i = 0; i < num_runs; i++)
   {
-    quickSort(vetor, tamanho);
+    quickSort(copy, tamanho);
   }
   gettimeofday(&end, NULL);
 
