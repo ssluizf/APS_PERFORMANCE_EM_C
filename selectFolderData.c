@@ -47,6 +47,7 @@ int selectFolderData(char* basePath)
 
     if (!(S_ISDIR(st.st_mode))) {
       char c;
+      int number = 0;
     
       printf("\nExecutando arquivo: %s\n", path);
 
@@ -63,13 +64,19 @@ int selectFolderData(char* basePath)
 
       fseek(entry_file, 0, SEEK_SET);
 
+      for (int i = 0; i < tamanho; i++)
+      {
+        fscanf(entry_file, "%d", &number);
+        vetor[i] = number;
+      }
+
       execAll(vetor);
+      tamanho = 0;
       printf("\n---- Fim da execução ----\n");
     } else {
       selectFolderData(path);
     };
 
-    tamanho = 0;
     fclose(entry_file);
   }
   closedir(FD);
