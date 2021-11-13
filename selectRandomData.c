@@ -7,17 +7,8 @@
 #include <unistd.h>
 #include <errno.h>
 #include "selectRandomData.h"
+#include "eatLine.h"
 extern int tamanho;
-
-int eatLine(FILE *fp)
-{
-  for (;;)
-  {
-    int ch = getc(fp);
-    if (ch == '\n' || ch < 0)
-      return ch;
-  }
-}
 
 int *selectRandomData()
 {
